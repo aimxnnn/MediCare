@@ -1,0 +1,75 @@
+doctor_id	doctor_name	department	patients_treated
+3	Dr. Suresh Iyer	Orthopedics	4
+5	Dr. Ananya Kulkarni	Pediatrics	3
+2	Dr. Kavita Rao	Cardiology	2
+4	Dr. Nithya Shetty	Orthopedics	2
+7	Dr. Meera Nair	General Medicine	2
+8	Dr. Vikram Desai	General Medicine	2
+9	Dr. Priya Menon	Dermatology	2
+1	Dr. Rohan Mehta	Cardiology	1
+6	Dr. Farhan Sheikh	Pediatrics	1
+department_id	department	total_appointments
+1	Cardiology	9
+department	num_doctors	avg_consultation_fee
+Cardiology	2	1350.00
+Dermatology	1	1000.00
+Orthopedics	2	850.00
+Pediatrics	2	675.00
+General Medicine	2	575.00
+patient_id	name	phone
+15	Ramesh Chandran	9900001015
+16	Fatima Ansari	9900001016
+17	Sanjay Gowda	9900001017
+18	Rekha Iyengar	9900001018
+medicine_id	medicine_name	times_prescribed
+9	Ibuprofen 400mg	9
+5	Amlodipine 5mg	8
+1	Paracetamol 500mg	6
+6	Cetirizine 10mg	4
+3	Atorvastatin 10mg	3
+4	Metformin 500mg	3
+12	Insulin Glargine	2
+7	Azithromycin 500mg	1
+8	Pantoprazole 40mg	1
+10	Vitamin D3 60K	1
+11	Salbutamol Inhaler	1
+patient_id	name	total_admissions
+1	Arjun Reddy	2
+9	Amit Bansal	2
+revenue_month	num_payments	total_revenue
+2026-01	7	11700.00
+2026-02	9	15200.00
+2026-03	8	39200.00
+2026-04	5	7850.00
+2026-05	6	20250.00
+2026-06	2	1450.00
+room_id	room_type	is_available	times_used
+1	General	1	2
+3	Semi-Private	1	2
+6	Private	1	2
+2	General	1	1
+5	Private	1	1
+7	ICU	0	1
+8	ICU	1	1
+4	Semi-Private	0	0
+room_type	avg_stay_days	discharged_admissions
+ICU	3.5	2
+Private	3.3	3
+Semi-Private	3.0	1
+General	2.0	2
+doctor_id	doctor_name	consultation_fee	completed_appointments	estimated_revenue
+1	Dr. Rohan Mehta	1200.00	5	6000.00
+3	Dr. Suresh Iyer	900.00	6	5400.00
+2	Dr. Kavita Rao	1500.00	3	4500.00
+5	Dr. Ananya Kulkarni	700.00	3	2100.00
+9	Dr. Priya Menon	1000.00	2	2000.00
+7	Dr. Meera Nair	600.00	3	1800.00
+8	Dr. Vikram Desai	550.00	3	1650.00
+4	Dr. Nithya Shetty	800.00	2	1600.00
+6	Dr. Farhan Sheikh	650.00	2	1300.00
+department	total_appointments	cancelled	cancellation_rate_pct
+Dermatology	3	1	33.3
+Cardiology	9	0	0.0
+General Medicine	7	0	0.0
+Orthopedics	8	0	0.0
+Pediatrics	5	0	0.0
