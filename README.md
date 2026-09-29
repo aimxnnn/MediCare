@@ -42,8 +42,9 @@ diagrams/
   er_diagram.png           -> the ER diagram
   relational_schema.png    -> the relational schema diagram
 docs/
-  normalisation.md              -> functional dependencies, 1NF-3NF walkthrough
+  Hospital Management Database.md   -> what needs to be done
   design rationale.md     -> why we made the design decisions we made
+  normalisation.md              -> functional dependencies, 1NF-3NF walkthrough
   project report              -> 
 ```
 
@@ -86,7 +87,7 @@ The database is normalised up to 3NF. The prescription-to-medicine relationship 
 
 ## Team Contributions
 
-- Requirements — Adib
+- Requirement analysis and design rationale — Adib
 - ER diagram and relational design — Akshay
 - Normalisation — Aditya
 - Implementation and queries — Ayushman
