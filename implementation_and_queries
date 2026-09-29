@@ -2,7 +2,7 @@
 
 Sections owned:** Database implementation and data quality; SQL queries and analysis
 **RDBMS:** MySQL 8.0+
-**Files:** `schema/create_tables.sql`, `data/insert_data.sql`, `queries/queries.sql`
+**Files:** `schema/create_tables.sql`, `data/insert_data.sql`, `queries/queries.sql` 
 
 This section documents the decisions behind the implementation, separate from the
 normalisation write-up, which covers *why* the tables are structured this way.
