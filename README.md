@@ -87,7 +87,7 @@ The database is normalised up to 3NF. The prescription-to-medicine relationship 
 
 ## Team Contributions
 
-- Requirement analysis and design rationale — Adib
+- Requirement analysis — Adib
 - ER diagram and relational design — Akshay
 - Normalisation — Aditya
 - Implementation and queries — Ayushman
