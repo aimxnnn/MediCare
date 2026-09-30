@@ -1,4 +1,4 @@
--- =========================================================
+
 -- MEDICARE - HOSPITAL MANAGEMENT DATABASE
 -- DBMS Course Project - Team 1
 -- MySQL 8.x
@@ -6,24 +6,24 @@
 -- This script can be run from top to bottom.
 -- WARNING: DROP DATABASE deletes the existing medicare database
 -- and all data inside it.
--- =========================================================
 
--- =========================================================
+
+
 -- 1. DROP AND CREATE DATABASE
--- =========================================================
+
 
 DROP DATABASE IF EXISTS medicare;
 CREATE DATABASE medicare;
 USE medicare;
 
 
--- =========================================================
--- 2. CREATE TABLES
--- =========================================================
 
--- ---------------------------------------------------------
+-- 2. CREATE TABLES
+
+
+
 -- TABLE 1: DEPARTMENTS
--- ---------------------------------------------------------
+
 CREATE TABLE departments (
     department_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -31,9 +31,9 @@ CREATE TABLE departments (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 2: DOCTORS
--- ---------------------------------------------------------
+
 CREATE TABLE doctors (
     doctor_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -52,9 +52,9 @@ CREATE TABLE doctors (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 3: PATIENTS
--- ---------------------------------------------------------
+
 CREATE TABLE patients (
     patient_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -74,9 +74,9 @@ CREATE TABLE patients (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 4: ROOMS
--- ---------------------------------------------------------
+
 CREATE TABLE rooms (
     room_id INT PRIMARY KEY AUTO_INCREMENT,
     room_type VARCHAR(50) NOT NULL,
@@ -88,9 +88,9 @@ CREATE TABLE rooms (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 5: APPOINTMENTS
--- ---------------------------------------------------------
+
 CREATE TABLE appointments (
     appointment_id INT PRIMARY KEY AUTO_INCREMENT,
     patient_id INT NOT NULL,
@@ -115,9 +115,9 @@ CREATE TABLE appointments (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 6: DIAGNOSES
--- ---------------------------------------------------------
+
 CREATE TABLE diagnoses (
     diagnosis_id INT PRIMARY KEY AUTO_INCREMENT,
     appointment_id INT NOT NULL,
@@ -132,9 +132,9 @@ CREATE TABLE diagnoses (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 7: ADMISSIONS
--- ---------------------------------------------------------
+
 CREATE TABLE admissions (
     admission_id INT PRIMARY KEY AUTO_INCREMENT,
     patient_id INT NOT NULL,
@@ -161,10 +161,8 @@ CREATE TABLE admissions (
         )
 );
 
-
--- ---------------------------------------------------------
 -- TABLE 8: MEDICINES
--- ---------------------------------------------------------
+
 CREATE TABLE medicines (
     medicine_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -176,9 +174,8 @@ CREATE TABLE medicines (
 );
 
 
--- ---------------------------------------------------------
 -- TABLE 9: PRESCRIPTIONS
--- ---------------------------------------------------------
+
 CREATE TABLE prescriptions (
     prescription_id INT PRIMARY KEY AUTO_INCREMENT,
     appointment_id INT NOT NULL,
@@ -192,11 +189,11 @@ CREATE TABLE prescriptions (
 );
 
 
--- ---------------------------------------------------------
+
 -- TABLE 10: PRESCRIPTION_MEDICINES
 -- Bridge table for the M:N relationship between
 -- prescriptions and medicines.
--- ---------------------------------------------------------
+
 CREATE TABLE prescription_medicines (
     prescription_id INT NOT NULL,
     medicine_id INT NOT NULL,
@@ -222,9 +219,9 @@ CREATE TABLE prescription_medicines (
 );
 
 
--- =========================================================
+
 -- PAYMENTS
--- =========================================================
+
 
 CREATE TABLE payments (
     payment_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -256,13 +253,13 @@ CREATE TABLE payments (
 );
 
 
--- =========================================================
--- 3. DATABASE STRUCTURE CREATED
--- =========================================================
 
--- =========================================================
+-- 3. DATABASE STRUCTURE CREATED
+
+
+
 -- 3. BASIC VERIFICATION QUERIES
--- =========================================================
+
 
 -- Show all tables
 SHOW TABLES;
@@ -305,6 +302,5 @@ SELECT * FROM payments;
 
 
 
--- =========================================================
--- END OF MEDICARE DATABASE STRUCTURE SCRIPT
--- =========================================================
+
+
