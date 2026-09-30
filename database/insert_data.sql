@@ -1,17 +1,17 @@
--- =====================================================================
+
 -- MediCare : Hospital Information and Management Database
 -- File    : data/insert_data.sql
 -- Purpose : Sample data for all 11 tables
 -- RDBMS   : MySQL 8.0+
 -- Run after: database_structure.sql
--- =====================================================================
+
 
 USE medicare;
 
 
--- =====================================================================
+
 -- 1. DEPARTMENTS
--- =====================================================================
+
 
 INSERT INTO departments (name, location) VALUES
 ('Cardiology',       'Block A, 2nd Floor'),
@@ -21,9 +21,9 @@ INSERT INTO departments (name, location) VALUES
 ('Dermatology',      'Block B, 2nd Floor');
 
 
--- =====================================================================
+
 -- 2. DOCTORS
--- =====================================================================
+
 
 INSERT INTO doctors
 (name, specialisation, consultation_fee, department_id)
@@ -39,9 +39,9 @@ VALUES
 ('Dr. Priya Menon',     'Cosmetic Dermatology',       1000.00, 5);
 
 
--- =====================================================================
+
 -- 3. PATIENTS
--- =====================================================================
+
 
 INSERT INTO patients
 (name, dob, gender, phone, blood_group)
@@ -66,9 +66,9 @@ VALUES
 ('Rekha Iyengar',     '1982-12-30', 'Female', '9900001018', 'AB+');
 
 
--- =====================================================================
+
 -- 4. ROOMS
--- =====================================================================
+
 
 INSERT INTO rooms
 (room_type, daily_charge, is_available)
@@ -83,9 +83,9 @@ VALUES
 ('ICU',           7500.00, TRUE);
 
 
--- =====================================================================
+
 -- 5. MEDICINES
--- =====================================================================
+
 
 INSERT INTO medicines
 (name, manufacturer, unit_price)
@@ -104,9 +104,9 @@ VALUES
 ('Insulin Glargine',   'Sanofi',     450.00);
 
 
--- =====================================================================
+
 -- 6. APPOINTMENTS
--- =====================================================================
+
 
 INSERT INTO appointments
 (patient_id, doctor_id, appointment_date, status)
@@ -150,9 +150,9 @@ VALUES
 (1,  2, '2026-06-10 15:00:00', 'Scheduled');
 
 
--- =====================================================================
+
 -- 7. ADMISSIONS
--- =====================================================================
+
 
 INSERT INTO admissions
 (patient_id, room_id, admit_date, discharge_date)
@@ -169,9 +169,9 @@ VALUES
 (14, 1, '2026-06-05', NULL);
 
 
--- =====================================================================
+
 -- 8. DIAGNOSES
--- =====================================================================
+
 
 INSERT INTO diagnoses
 (appointment_id, description, diagnosis_date)
@@ -207,9 +207,9 @@ VALUES
 (31, 'Joint pain, chronic review',        '2026-06-04');
 
 
--- =====================================================================
+
 -- 9. PRESCRIPTIONS
--- =====================================================================
+
 
 INSERT INTO prescriptions
 (appointment_id, issued_date)
@@ -245,9 +245,9 @@ VALUES
 (29, '2026-06-04');
 
 
--- =====================================================================
+
 -- 10. PRESCRIPTION_MEDICINES
--- =====================================================================
+
 
 INSERT INTO prescription_medicines
 (prescription_id, medicine_id, dosage, duration_days)
@@ -321,12 +321,12 @@ VALUES
 (29, 3,  '1 tablet HS', 30);
 
 
--- =====================================================================
+
 -- 11. PAYMENTS
 -- IMPORTANT:
 -- The current payments table DOES NOT contain patient_id.
 -- A payment is linked through appointment_id OR admission_id.
--- =====================================================================
+
 
 INSERT INTO payments
 (appointment_id, admission_id, amount, payment_date, mode)
@@ -398,9 +398,9 @@ VALUES
 (31, NULL, 900.00,   '2026-06-04', 'UPI');
 
 
--- =====================================================================
+
 -- VERIFICATION
--- =====================================================================
+
 
 SHOW TABLES;
 
