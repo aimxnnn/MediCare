@@ -1,4 +1,4 @@
-# MediCare — Hospital Information and Management Database
+#MediCare README 
 
 This repository contains our DBMS course project (Team 1). We designed and implemented a relational database for a hospital, MediCare, covering patient registrations, doctors and departments, appointments, room admissions, prescriptions, and billing, consolidated into a single connected system rather than scattered spreadsheets.
 
