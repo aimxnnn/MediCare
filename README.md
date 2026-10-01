@@ -24,28 +24,30 @@ The database supports the following:
 - Admitting patients into rooms and recording discharge
 - Diagnoses and prescriptions linked to the actual appointment they came from
 - Medicines on a prescription (a prescription can have more than one)
-- Payments, tied to either an appointment or an admission
+- Payments, tied to exactly one appointment or one admission (never both)
 
 ## Built With
 
 MySQL 8.0+. Note that `CHECK` constraints are only enforced from MySQL 8.0.16 onward, so a local setup should use that version or later.
 
-## Folder structure
+## Folder Structure
 
 ```
-database/
-  create_tables.sql       -> creates the database + all 11 tables + constraints
-  insert_data.sql         -> sample data for every table
-data queries/
-  queries.sql             -> all the business question queries (Q1-Q11)
+schema/
+  create_tables.sql          -> creates the database + all 11 tables + constraints + the payments_with_patient view
+data/
+  insert_data.sql            -> sample data for every table (20 patients, 32 appointments, 37 payments, etc.)
+queries/
+  queries.sql                -> all the business question queries (Q1-Q11)
 diagrams/
-  er_diagram.png           -> the ER diagram
-  relational_schema.png    -> the relational schema diagram
+  er_diagram.png              -> the ER diagram
+  relational_schema.png       -> the relational schema diagram
 docs/
-  Hospital Management Database.md   -> what needs to be done
-  design rationale.md     -> why we made the design decisions we made
-  normalisation.md              -> functional dependencies, 1NF-3NF walkthrough
-  project report              -> 
+  stage1_requirements.md      -> problem statement, requirements, assumptions
+  normalisation.md            -> functional dependencies, 1NF-3NF walkthrough
+  design_rationale.md         -> why we made the design decisions we made
+  data_fixes.sql               -> record of data-quality issues found in the sample data and how each was fixed
+  query_results.txt           -> output of running queries.sql
 ```
 
 ## Setup
@@ -83,7 +85,11 @@ The SQL for all queries is in `queries/queries.sql`, and the output against the 
 
 ## Design Notes
 
-The database is normalised up to 3NF. The prescription-to-medicine relationship is resolved through a dedicated bridge table, as it is many-to-many, and payments are linked to either an appointment or an admission (never both), rather than left unattached as in the originally suggested schema. The full reasoning behind these decisions is documented in `docs/stage9_design_rationale.md`.
+The database is normalised up to 3NF. The prescription-to-medicine relationship is resolved through a dedicated bridge table, as it is many-to-many, and payments are linked to exactly one of an appointment or an admission, enforced by `chk_payment_reference`. Notably, `payments` does **not** store `patient_id` directly — the patient is fully derivable through the linked appointment or admission, so storing it again would be a transitive dependency. A view, `payments_with_patient`, is provided in `schema/create_tables.sql` for queries that need the patient resolved. The full reasoning behind these decisions is documented in `docs/design_rationale.md`.
+
+## Data Quality
+
+The sample data went through a review pass that caught and corrected six issues — a prescription/appointment mismatch, a room double-booking, stale room availability flags, two admission payments that didn't match `daily_charge × length of stay`, four appointments assigned to the wrong doctor, and two diagnoses that were pediatric/neonatal in nature but attached to adult patients (resolved by adding two new patients). The full writeup, including the verification query used for each, is in `docs/data_fixes.md`.
 
 ## Team Contributions
 
