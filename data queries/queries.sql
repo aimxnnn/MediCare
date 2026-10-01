@@ -281,4 +281,4 @@ GROUP BY
 
 ORDER BY
     cancellation_rate_pct DESC;
-quries part
+
