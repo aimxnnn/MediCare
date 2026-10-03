@@ -10,23 +10,13 @@
 -- Run order: create_tables.sql -> insert_data.sql -> queries.sql
 -- =====================================================================
 
-DROP DATABASE IF EXISTS medicare;
-CREATE DATABASE medicare;
-USE medicare;
+-- DATABASE SETUP
 
--- Safety net if the database is not dropped above: drop children first,
--- then parents (reverse of the creation order).
-DROP TABLE IF EXISTS payments;
-DROP TABLE IF EXISTS prescription_medicines;
-DROP TABLE IF EXISTS prescriptions;
-DROP TABLE IF EXISTS medicines;
-DROP TABLE IF EXISTS admissions;
-DROP TABLE IF EXISTS diagnoses;
-DROP TABLE IF EXISTS appointments;
-DROP TABLE IF EXISTS rooms;
-DROP TABLE IF EXISTS patients;
-DROP TABLE IF EXISTS doctors;
-DROP TABLE IF EXISTS departments;
+DROP DATABASE IF EXISTS medicare;
+
+CREATE DATABASE medicare;
+
+USE medicare;
 
 
 -- ---------------------------------------------------------------------
@@ -238,18 +228,23 @@ CREATE INDEX idx_payments_date       ON payments (payment_date);
 CREATE INDEX idx_patients_name       ON patients (name);
 
 -- ---------------------------------------------------------------------
--- VIEW: payments_with_patient
--- Resolves patient_id for a payment via whichever of appointment_id /
--- admission_id is set, since payments no longer stores it directly.
--- ---------------------------------------------------------------------
+
+
+-- =========================================
+-- VIEW: PAYMENTS WITH PATIENT
+-- =========================================
+
 CREATE OR REPLACE VIEW payments_with_patient AS
-SELECT pay.payment_id,
-       COALESCE(a.patient_id, ad.patient_id) AS patient_id,
-       pay.appointment_id,
-       pay.admission_id,
-       pay.amount,
-       pay.payment_date,
-       pay.mode
-FROM payments pay
-LEFT JOIN appointments a ON a.appointment_id = pay.appointment_id
-LEFT JOIN admissions ad  ON ad.admission_id = pay.admission_id;
+SELECT
+    pay.payment_id,
+    COALESCE(ap.patient_id, adm.patient_id) AS patient_id,
+    pay.appointment_id,
+    pay.admission_id,
+    pay.amount,
+    pay.payment_date,
+    pay.mode
+FROM payments AS pay
+LEFT JOIN appointments AS ap
+    ON ap.appointment_id = pay.appointment_id
+LEFT JOIN admissions AS adm
+    ON adm.admission_id = pay.admission_id;
