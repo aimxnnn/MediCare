@@ -428,7 +428,11 @@ VALUES
 (31, NULL, 900.00,   '2026-06-04', 'UPI');
 
 
+-- =========================================
 -- VERIFICATION
+-- =========================================
+
+USE medicare;
 
 SHOW TABLES;
 
@@ -443,3 +447,6 @@ UNION ALL SELECT 'medicines', COUNT(*) FROM medicines
 UNION ALL SELECT 'prescriptions', COUNT(*) FROM prescriptions
 UNION ALL SELECT 'prescription_medicines', COUNT(*) FROM prescription_medicines
 UNION ALL SELECT 'payments', COUNT(*) FROM payments;
+
+-- Check the payment view
+SELECT * FROM payments_with_patient;
