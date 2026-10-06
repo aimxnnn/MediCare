@@ -47,7 +47,7 @@ docs/
   normalisation.md            -> functional dependencies, 1NF-3NF walkthrough
   design_rationale.md         -> why we made the design decisions we made
   data_fixes.sql               -> record of data-quality issues found in the sample data and how each was fixed
-  query_results.txt           -> output of running queries.sql
+  MediCare_Project_Report.md   -> the full project report
 ```
 
 ## Setup
@@ -89,7 +89,7 @@ The database is normalised up to 3NF. The prescription-to-medicine relationship 
 
 ## Data Quality
 
-The sample data went through a review pass that caught and corrected six issues — a prescription/appointment mismatch, a room double-booking, stale room availability flags, two admission payments that didn't match `daily_charge × length of stay`, four appointments assigned to the wrong doctor, and two diagnoses that were pediatric/neonatal in nature but attached to adult patients (resolved by adding two new patients). The full writeup, including the verification query used for each, is in `docs/data_fixes.md`.
+The sample data went through a review pass that caught and corrected six issues — a prescription/appointment mismatch, a room double-booking, stale room availability flags, two admission payments that didn't match `daily_charge × length of stay`, four appointments assigned to the wrong doctor, and two diagnoses that were pediatric/neonatal in nature but attached to adult patients (resolved by adding two new patients). The full writeup, including the verification query used for each, is in `docs/data_fixes.sql`.
 
 ## Team Contributions
 
