@@ -85,9 +85,9 @@ The design has 11 entities connected by 1:N relationships, with one many-to-many
 
 The diagram shows every entity with its attributes, the relationships between them and their cardinalities. Primary keys are underlined and foreign keys are marked FK.
 
-![Figure 1. The team's ER diagram (Chen notation)](diagrams/er_diagram.png)
+![Figure 1. The team's ER diagram (Chen notation)](diagrams/ER_diagram.png)
 
-*Figure 1. The team's ER diagram (Chen notation), saved as `diagrams/er_diagram.png`.*
+*Figure 1. The team's ER diagram (Chen notation), saved as `diagrams/ER_Diagram.png`.*
 
 | Relationship | Entities | Cardinality | Implemented by |
 |---|---|---|---|
@@ -577,7 +577,7 @@ The layout follows the structure recommended in the project brief, with one fold
 | `data/insert_data.sql` | Sample data for every table |
 | `queries/queries.sql` | All eleven business queries, each with a short comment |
 | `diagrams/` | ER diagram and relational schema diagram (PNG) |
-| `docs/` | Requirements, normalisation, design rationale, query results and this report |
+| `docs/` | Requirements, normalisation, design rationale, and this report |
 
 ### 6.2 Documentation set
 
@@ -588,7 +588,6 @@ Each document answers one question, so nothing is written twice.
 | Requirements (Stage 1) | What problem is being solved, and which rules and assumptions apply |
 | Normalisation | Which functional dependencies exist, and why every table is in 3NF |
 | Design rationale | Why the schema, constraints and referential actions were chosen, how the sample data was designed, and what each query does |
-| Query results | The output of Q1 to Q11 on the sample data |
 | Project report | The whole project in one document |
 
 ### 6.3 Reproducing the project
