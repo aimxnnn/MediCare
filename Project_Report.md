@@ -134,7 +134,7 @@ The arrows run from each foreign key to the table it references, so the parent (
 | `medicines` | `medicine_id` | none | `name`, `manufacturer`, `unit_price` |
 | `prescriptions` | `prescription_id` | `appointment_id` | `issued_date` |
 | `prescription_medicines` | (`prescription_id`, `medicine_id`) | both parts are foreign keys | `dosage`, `duration_days` |
-| `payments` | `payment_id` | `patient_id`, `appointment_id` (nullable), `admission_id` (nullable) | `amount`, `payment_date`, `mode` |
+| `payments` | `payment_id` | `appointment_id` (nullable), `admission_id` (nullable) | `amount`, `payment_date`, `mode` |
 
 ### 2.3 Key design decisions
 
@@ -174,7 +174,7 @@ In MediCare the primary key of each relation determines its other attributes. Fo
 | `prescriptions` | `prescription_id` → appointment_id, issued_date | 3NF |
 | `medicines` | `medicine_id` → name, manufacturer, unit_price | 3NF |
 | `prescription_medicines` | (`prescription_id`, `medicine_id`) → dosage, duration_days | 3NF |
-| `payments` | `payment_id` → patient_id, appointment_id, admission_id, amount, payment_date, mode | 3NF |
+| `payments` | `payment_id` → appointment_id, admission_id, amount, payment_date, mode | 3NF |
 
 ### 3.2 From one large record to 11 relations
 
@@ -281,7 +281,7 @@ The constraint block of `payments` shows the billing design in three lines:
 ```sql
 CONSTRAINT chk_payment_amount CHECK (amount > 0),
 CONSTRAINT chk_payment_mode CHECK (mode IN ('Cash', 'Card', 'UPI', 'Online')),
-CONSTRAINT chk_payment_reference CHECK (appointment_id IS NOT NULL OR admission_id IS NOT NULL)
+CONSTRAINT chk_payment_reference CHECK ((appointment_id IS NULL) <> (admission_id IS NULL))
 ```
 
 ### 4.3 Sample data design
@@ -348,7 +348,7 @@ All queries are in `queries/queries.sql`. The results below are from the sample 
 | Q4 | Registered patients who never visited | LEFT JOIN ... IS NULL | 5 patients |
 | Q5 | Most frequently prescribed medicines | Bridge-table JOIN, COUNT | Ibuprofen, 9 |
 | Q6 | Patients admitted more than once | GROUP BY, HAVING | 2 patients |
-| Q7 | Monthly revenue | DATE_FORMAT, SUM | ₹1,28,450 over 6 months |
+| Q7 | Monthly revenue | DATE_FORMAT, SUM | ₹128,450 over 6 months |
 | Q8 | Room occupancy | LEFT JOIN, COUNT | Rooms 1 and 6 used most (twice each) |
 | Q9 | Average length of stay by room type | DATEDIFF, AVG, WHERE | ICU, 3.5 days |
 | Q10 | Consultation revenue per doctor | Conditional JOIN, arithmetic | Dr. Rohan Mehta, ₹6,000 |
@@ -558,7 +558,7 @@ ORDER BY cancellation_rate_pct DESC;
 - **Demand is concentrated.** Orthopedics has the most appointments (10 of 32), while Cardiology has the highest average fee (₹1,350).
 - **Inpatient care drives revenue.** Admission payments account for most of the peak month, and ICU stays are the longest at 3.5 days on average.
 - **Room use is spread evenly.** Rooms 1 and 6 are used most (twice each) and every room has been used at least once.
-- **Follow-up opportunities exist.** Four registered patients have never had an appointment (Q4), and Dermatology's single cancellation gives it the highest cancellation rate (Q11).
+- **Follow-up opportunities exist.** Five registered patients have never had an appointment (Q4), and Dermatology's single cancellation gives it the highest cancellation rate (Q11).
 
 ---
 
@@ -587,8 +587,7 @@ Each document answers one question, so nothing is written twice.
 |---|---|
 | Requirements (Stage 1) | What problem is being solved, and which rules and assumptions apply |
 | Normalisation | Which functional dependencies exist, and why every table is in 3NF |
-| Design rationale (Stage 9) | Why the schema, constraints and referential actions were chosen |
-| Implementation and queries | How the scripts were built, how the sample data was designed, and what each query does |
+| Design rationale | Why the schema, constraints and referential actions were chosen, how the sample data was designed, and what each query does |
 | Query results | The output of Q1 to Q11 on the sample data |
 | Project report | The whole project in one document |
 
