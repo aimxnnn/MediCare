@@ -180,9 +180,9 @@ CREATE TABLE prescription_medicines (
     CONSTRAINT chk_pm_duration CHECK (duration_days > 0)
 ) ENGINE=InnoDB;
 
--- ------------------------------------------------------------------------
--- 11. PAYMENTS  (linked to exactly one of: an appointment or an admission)
--- ------------------------------------------------------------------------
+-- ---------------------------------------------------------------------
+-- 11. PAYMENTS  (linked to an appointment, an admission, or both)
+-- ---------------------------------------------------------------------
 CREATE TABLE payments (
     payment_id      INT PRIMARY KEY AUTO_INCREMENT,
     appointment_id  INT           NULL,
@@ -212,7 +212,7 @@ CREATE TABLE payments (
         CHECK (mode IN ('Cash', 'Card', 'UPI', 'Online')),
 
     CONSTRAINT chk_payment_reference
-        CHECK ((appointment_id IS NULL) <> (admission_id IS NULL))
+        CHECK (appointment_id IS NOT NULL OR admission_id IS NOT NULL)
 ) ENGINE=InnoDB;
 
 
