@@ -6,7 +6,7 @@
 -- RDBMS   : MySQL 8.0+
 --
 -- Run after:
--- 1. database_structure.sql
+-- 1. create_tables.sql
 -- 2. insert_data.sql
 
 USE medicare;
