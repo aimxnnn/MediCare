@@ -132,12 +132,7 @@ directly: `appointment_date` and `status` on `appointments`, `admit_date` and
 ### 3.7 Database and script safety
 
 The schema script opens with `DROP DATABASE IF EXISTS medicare; CREATE DATABASE
-medicare;` so it can be re-run from a clean state at any time, followed by
-defensive `DROP TABLE IF EXISTS` statements in reverse dependency order as a
-safety net if only the tables — not the whole database — need to be rebuilt.
-Tables are created parents-before-children, so every foreign key reference
-already exists at creation time:
-
+medicare;` so it can be re-run from a clean state at any time.
 ```
 departments → doctors → patients → rooms → appointments → diagnoses →
 admissions → medicines → prescriptions → prescription_medicines → payments
@@ -221,7 +216,7 @@ The data in `data/insert_data.sql` was built deliberately rather than randomly,
 so every business question returns a genuine, non-trivial result. A review pass
 also caught and corrected six data-quality issues in the original draft of the
 data — the full detail and verification query for each is in
-`docs/data_fixes.md`:
+`docs/data_fixes.sql`:
 
 1. Prescriptions 19–29 were re-pointed to the correct appointment sequence
    (`20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31`) — appointments 19 and 24 were
