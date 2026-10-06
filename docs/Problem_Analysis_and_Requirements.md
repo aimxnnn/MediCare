@@ -8,7 +8,7 @@
 | **Team** | Team 1 |
 | **Team Size** | 6 members |
 | **Target Database** | MySQL |
-| **Document Path** | `docs/Problem Analysis and Requirements.md` |
+| **Document Path** | `docs/Problem_Analysis_and_Requirements.md` |
 
 ---
 
