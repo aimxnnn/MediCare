@@ -33,9 +33,8 @@ MySQL 8.0+. Note that `CHECK` constraints are only enforced from MySQL 8.0.16 on
 ## Folder Structure
 
 ```
-schema/
+database/
   create_tables.sql          -> creates the database + all 11 tables + constraints + the payments_with_patient view
-data/
   insert_data.sql            -> sample data for every table (20 patients, 32 appointments, 37 payments, etc.)
 queries/
   queries.sql                -> all the business question queries (Q1-Q11)
@@ -43,9 +42,9 @@ diagrams/
   er_diagram.png              -> the ER diagram
   relational_schema.png       -> the relational schema diagram
 docs/
-  stage1_requirements.md      -> problem statement, requirements, assumptions
-  normalisation.md            -> functional dependencies, 1NF-3NF walkthrough
-  design_rationale.md         -> why we made the design decisions we made
+  Problem Analysis and Requirements.md      -> problem statement, requirements, assumptions
+  Normalisation.md            -> functional dependencies, 1NF-3NF walkthrough
+  Design Rationale.md         -> why we made the design decisions we made
   data_fixes.sql               -> record of data-quality issues found in the sample data and how each was fixed
   MediCare_Project_Report.md   -> the full project report
 ```
