@@ -41,7 +41,7 @@ queries/
   queries.sql                -> all the business question queries (Q1-Q11)
 diagrams/
   ER_Diagram.png             -> the ER diagram
-  MediCare_Relational_Schema_drawio__1_.png -> the relational schema diagram
+  Relational_Schema.png      -> the relational schema diagram
 docs/
   Problem_Analysis_and_Requirements.md -> problem statement, requirements, assumptions
   Normalisation.md           -> functional dependencies, 1NF-3NF walkthrough
