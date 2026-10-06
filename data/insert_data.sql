@@ -6,7 +6,7 @@
 -- Run after: schema/create_tables.sql
 --
 -- CHANGELOG (fixes applied after cross-checking the data for internal
--- consistency -- see docs/data_fixes.md for the full reasoning):
+-- consistency -- see docs/data_fixes.sql for the full reasoning):
 --   1. Prescriptions 19-29 were linked to the wrong appointment_id
 --      (sequential 19..29 instead of skipping the Cancelled/Scheduled
 --      appointments 19 and 24, as the diagnoses table correctly does).
