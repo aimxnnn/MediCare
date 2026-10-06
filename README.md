@@ -81,7 +81,7 @@ In addition, the team included the following:
 10. Estimated revenue per doctor
 11. Cancellation rate per department
 
-The SQL for all queries is in `queries/queries.sql`, and the output against the sample data is saved in `docs/query_results.txt`.
+The SQL for all queries is in `queries/queries.sql`.
 
 ## Design Notes
 
