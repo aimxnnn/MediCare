@@ -85,7 +85,7 @@ The SQL for all queries is in `queries/queries.sql`.
 
 ## Design Notes
 
-The database is normalised up to 3NF. The prescription-to-medicine relationship is resolved through a dedicated bridge table, as it is many-to-many, and payments are linked to exactly one of an appointment or an admission, enforced by `chk_payment_reference`. Notably, `payments` does **not** store `patient_id` directly — the patient is fully derivable through the linked appointment or admission, so storing it again would be a transitive dependency. A view, `payments_with_patient`, is provided in `schema/create_tables.sql` for queries that need the patient resolved. The full reasoning behind these decisions is documented in `docs/Design_Rationale.md`.e
+The database is normalised up to 3NF. The prescription-to-medicine relationship is resolved through a dedicated bridge table, as it is many-to-many, and payments are linked to exactly one of an appointment or an admission, enforced by `chk_payment_reference`. Notably, `payments` does **not** store `patient_id` directly — the patient is fully derivable through the linked appointment or admission, so storing it again would be a transitive dependency. A view, `payments_with_patient`, is provided in `schema/create_tables.sql` for queries that need the patient resolved. The full reasoning behind these decisions is documented in `docs/Design_Rationale.md`.
 
 ## Data Quality
 
