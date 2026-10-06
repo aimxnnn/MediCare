@@ -33,20 +33,21 @@ MySQL 8.0+. Note that `CHECK` constraints are only enforced from MySQL 8.0.16 on
 ## Folder Structure
 
 ```
-database/
+schema/
   create_tables.sql          -> creates the database + all 11 tables + constraints + the payments_with_patient view
+data/
   insert_data.sql            -> sample data for every table (20 patients, 32 appointments, 37 payments, etc.)
 queries/
   queries.sql                -> all the business question queries (Q1-Q11)
 diagrams/
-  er_diagram.png              -> the ER diagram
-  relational_schema.png       -> the relational schema diagram
+  ER_Diagram.png             -> the ER diagram
+  MediCare_Relational_Schema_drawio__1_.png -> the relational schema diagram
 docs/
-  Problem Analysis and Requirements.md      -> problem statement, requirements, assumptions
-  Normalisation.md            -> functional dependencies, 1NF-3NF walkthrough
-  Design Rationale.md         -> why we made the design decisions we made
-  data_fixes.sql               -> record of data-quality issues found in the sample data and how each was fixed
-  MediCare_Project_Report.md   -> the full project report
+  Problem_Analysis_and_Requirements.md -> problem statement, requirements, assumptions
+  Normalisation.md           -> functional dependencies, 1NF-3NF walkthrough
+  Design_Rationale.md        -> why we made the design decisions we made
+  data_fixes.sql             -> record of data-quality issues found in the sample data and how each was fixed
+  Project_Report.md          -> the full project report
 ```
 
 ## Setup
@@ -84,7 +85,7 @@ The SQL for all queries is in `queries/queries.sql`, and the output against the 
 
 ## Design Notes
 
-The database is normalised up to 3NF. The prescription-to-medicine relationship is resolved through a dedicated bridge table, as it is many-to-many, and payments are linked to exactly one of an appointment or an admission, enforced by `chk_payment_reference`. Notably, `payments` does **not** store `patient_id` directly — the patient is fully derivable through the linked appointment or admission, so storing it again would be a transitive dependency. A view, `payments_with_patient`, is provided in `schema/create_tables.sql` for queries that need the patient resolved. The full reasoning behind these decisions is documented in `docs/design_rationale.md`.
+The database is normalised up to 3NF. The prescription-to-medicine relationship is resolved through a dedicated bridge table, as it is many-to-many, and payments are linked to exactly one of an appointment or an admission, enforced by `chk_payment_reference`. Notably, `payments` does **not** store `patient_id` directly — the patient is fully derivable through the linked appointment or admission, so storing it again would be a transitive dependency. A view, `payments_with_patient`, is provided in `schema/create_tables.sql` for queries that need the patient resolved. The full reasoning behind these decisions is documented in `docs/Design_Rationale.md`.e
 
 ## Data Quality
 
