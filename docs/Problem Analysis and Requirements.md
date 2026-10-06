@@ -1,14 +1,14 @@
 # MediCare – Hospital Management Database
-## Stage 1 – Problem Understanding & Requirement Analysis
+## Problem Understanding & Requirement Analysis
 
 | Field | Detail |
 |---|---|
 | **Project Name** | MediCare: Hospital Information and Management Database |
-| **Course Component** | Stage 1 – Problem Understanding & Requirement Analysis |
+| **Course Component** | Problem Understanding & Requirement Analysis |
 | **Team** | Team 1 |
 | **Team Size** | 6 members |
-| **Target Database** | MySQL / PostgreSQL / SQL Server |
-| **Document Path** | `docs/stage1_requirements.md` |
+| **Target Database** | MySQL |
+| **Document Path** | `docs/Problem Analysis and Requirements.md` |
 
 ---
 
@@ -127,6 +127,6 @@ Our design relies on the following practical assumptions:
 
 ## 8. Conclusion
 
-MediCare is a practical, well-structured database built to streamline daily hospital operations[cite: 1, 3]. By unifying patient records, doctor allocations, appointments, room admissions, prescriptions, and billing into one clean structure, it eliminates confusion and keeps data reliable[cite: 1, 3].
+MediCare is a practical, well-structured database built to streamline daily hospital operations. By unifying patient records, doctor allocations, appointments, room admissions, prescriptions, and billing into one clean structure, it eliminates confusion and keeps data reliable.
 
-This Stage 1 requirement document forms the blueprint for the upcoming project phases: ER Diagramming, Relational Mapping, 3NF Normalization, SQL Table Creation, Sample Data Insertion, and Business Queries[cite: 1, 3].
+This requirement document forms the blueprint for the upcoming project phases: ER Diagramming, Relational Mapping, 3NF Normalization, SQL Table Creation, Sample Data Insertion, and Business Queries.
