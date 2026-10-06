@@ -4,7 +4,7 @@
 **Team:** Team 1
 **RDBMS:** MySQL 8.0+
 **Canonical schema file:** `schema/create_tables.sql`
-**Document path:** `docs/design_rationale.md`
+**Document path:** `docs/Design_Rationale.md`
 
 ---
 
