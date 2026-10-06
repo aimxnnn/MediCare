@@ -47,7 +47,7 @@ Every business rule below is traced to the mechanism in `create_tables.sql` that
 | 4 | A room hosts one active admission at a time | **Not enforced by the database:** MySQL CHECK cannot compare rows, so this is an application-level rule (see 4.6) |
 | 5 | A prescription holds many medicines; a medicine appears in many prescriptions | Bridge table `prescription_medicines` with a composite primary key |
 | 6 | Diagnoses and prescriptions exist only against an appointment | `appointment_id` is NOT NULL with a foreign key in both tables |
-| 7 | Every payment belongs to a patient and traces to an appointment or admission | `patient_id` NOT NULL plus `chk_payment_reference` |
+| 7 | Every payment traces to exactly one appointment or admission; the patient is derived from that link | `chk_payment_reference` (exactly one of the two foreign keys is filled) and the `payments_with_patient` view |
 | 8 | Appointment status is one of three values | `chk_appointment_status` |
 | 9 | Prescribed medicines come from the master catalogue | Foreign key `fk_pm_medicine` |
 
@@ -64,7 +64,8 @@ Every business rule below is traced to the mechanism in `create_tables.sql` that
 
 The project brief allows changes when they are explained. The team made these:
 
-- `payments` gained `appointment_id` and `admission_id`, both nullable, with a CHECK that at least one is filled. The suggested table had no way to say what a payment was for.
+- `payments` gained `appointment_id` and `admission_id`, both nullable, with a CHECK that exactly one is filled. The suggested table had no way to say what a payment was for.
+- `payments.patient_id` from the suggested table was removed. The patient is fully determined by the linked appointment or admission, so storing it again would be a transitive dependency (a 3NF violation) and could drift out of sync. The view `payments_with_patient` resolves the patient when a query needs it.
 - Payment modes in the schema are Cash, Card, UPI and Online. The early requirements draft also listed Insurance; insurance claims remain out of scope.
 - `patients` has no address column. The final table follows the brief's attribute list.
 
@@ -101,9 +102,8 @@ The diagram shows every entity with its attributes, the relationships between th
 | Assigned to | rooms to admissions | 1 : N (one active at a time) | `admissions.room_id` |
 | Settled by | appointments to payments | 1 : N | `payments.appointment_id` (nullable) |
 | Settled by | admissions to payments | 1 : N | `payments.admission_id` (nullable) |
-| Pays | patients to payments | 1 : N | `payments.patient_id` |
 
-Where a child's foreign key is NOT NULL, the child entity participates totally in the relationship: a doctor must have a department, an appointment must have a patient and a doctor, and a diagnosis or prescription must have an appointment. The two payment foreign keys are nullable, so payments participate partially in each and the CHECK constraint requires at least one of them.
+Where a child's foreign key is NOT NULL, the child entity participates totally in the relationship: a doctor must have a department, an appointment must have a patient and a doctor, and a diagnosis or prescription must have an appointment. The two payment foreign keys are nullable, so payments participate partially in each and the CHECK constraint requires exactly one of them. 
 
 ### 2.2 Relational schema
 
@@ -119,8 +119,7 @@ The ER model maps to the 11 tables below. Underlined keys in the diagram become 
 > - `diagnoses` (PK `diagnosis_id`, FK `appointment_id`) → `appointments`
 > - `prescriptions` (PK `prescription_id`, FK `appointment_id`) → `appointments`
 > - `prescription_medicines` (PK, FK `prescription_id`; PK, FK `medicine_id`) → `prescriptions`, `medicines`
-> - `payments` (PK `payment_id`, FK `patient_id`, FK `appointment_id` nullable, FK `admission_id` nullable) → `patients`, `appointments`, `admissions` — *highlighted as the one table extended beyond the brief*
-
+> - `payments` (PK `payment_id`, FK `appointment_id` nullable, FK `admission_id` nullable) → `appointments`, `admissions` — *highlighted as the one table extended beyond the brief*
 The arrows run from each foreign key to the table it references, so the parent (the "one" side) is always at the arrowhead. `payments` is highlighted because it is the one table extended beyond the brief.
 
 | Table | Primary key | Foreign keys | Other attributes |
@@ -139,7 +138,7 @@ The arrows run from each foreign key to the table it references, so the parent (
 
 ### 2.3 Key design decisions
 
-**Payments link to an appointment or an admission.** The suggested payments table said who paid and how much, but not what for. The team added two nullable foreign keys and a CHECK that at least one is filled, so every payment traces back to a visit or a stay. The sample data fills exactly one of the two on every payment.
+**Payments link to an appointment or an admission.** The suggested payments table said who paid and how much, but not what for. The team added two nullable foreign keys and a CHECK that exactly one is filled, so every payment traces back to a visit or a stay. The sample data fills exactly one of the two on every payment.
 
 **A bridge table resolves prescriptions to medicines.** A prescription can hold many medicines and a medicine can appear on many prescriptions, so neither side can carry a foreign key alone. `prescription_medicines` has a composite primary key and carries `dosage` and `duration_days`, which describe one medicine on one prescription and belong on neither parent table.
 
@@ -149,7 +148,7 @@ The arrows run from each foreign key to the table it references, so the parent (
 |---|---|---|---|
 | Master and reference data | doctors, patients, rooms, departments, medicines referenced by other tables | `RESTRICT` | A doctor, patient, room, department or medicine cannot be deleted while records still refer to it |
 | Dependent detail | diagnoses, prescriptions, prescription_medicines to their parents | `CASCADE` | These records have no meaning without their appointment or prescription |
-| Financial history | `payments.appointment_id`, `payments.admission_id`, `payments.patient_id` | `RESTRICT` | Payments are permanent history and are never deleted automatically |
+| Financial history | `payments.appointment_id`, `payments.admission_id` | Payments are permanent history and are never deleted automatically |
 
 All foreign keys use `ON UPDATE CASCADE` except the two on payments that point to appointments and admissions. Those use `ON UPDATE RESTRICT` on purpose, so a key renumbering can never silently ripple into billing records.
 
@@ -228,7 +227,7 @@ The schema applies all five constraint types the brief asks for, plus referentia
 | Constraint | Where it is used |
 |---|---|
 | PRIMARY KEY | One auto-increment key per table; composite key on `prescription_medicines` |
-| FOREIGN KEY | 12 foreign keys linking child tables to their parents |
+| FOREIGN KEY | 11 foreign keys linking child tables to their parents |
 | NOT NULL | Identity and business-critical fields, including every mandatory foreign key |
 | UNIQUE | `departments.name` |
 | DEFAULT | `appointments.status = 'Scheduled'`; `rooms.is_available = TRUE` |
@@ -252,7 +251,7 @@ MySQL indexes every foreign key column automatically. Five explicit indexes cove
 
 ## 4. Database Implementation and Data Quality
 
-The schema is implemented in MySQL 8.0.16 or later and loaded with 228 rows of deliberately designed sample data across all 11 tables, so every business query returns a real result.
+The schema is implemented in MySQL 8.0.16 or later and loaded with 230 rows of deliberately designed sample data across all 11 tables, so every business query returns a real result.
 
 ### 4.1 Environment and run order
 
@@ -270,7 +269,7 @@ mysql -u your_username -p < queries/queries.sql
 
 | Decision | Choice | Reason |
 |---|---|---|
-| Re-run safety | `DROP DATABASE IF EXISTS`, then `CREATE DATABASE`, then defensive `DROP TABLE IF EXISTS` in reverse dependency order | Rebuilds from a clean state at any time, even when only the tables need rebuilding |
+| Re-run safety | `DROP DATABASE IF EXISTS`, then `CREATE DATABASE` | Rebuilds from a clean state at any time |
 | Creation order | departments, doctors, patients, rooms, appointments, diagnoses, admissions, medicines, prescriptions, prescription_medicines, payments | Parents are created before children, so every foreign key target already exists |
 | Money fields | `DECIMAL(10,2)` for fees, charges, prices and amounts | Avoids the rounding errors of FLOAT on currency |
 | Dates | `DATETIME` for `appointment_date`; `DATE` for admit, discharge, issue and payment dates | Time of day matters for scheduling; day-level detail is enough elsewhere |
@@ -291,7 +290,7 @@ The data in `insert_data.sql` was built on purpose rather than generated at rand
 
 | Design choice | Why it matters |
 |---|---|
-| 4 of 18 patients have no appointments | Q4 returns real rows |
+| 5 of 20 patients have no appointments | Q4 returns real rows |
 | Two patients (Arjun Reddy, Amit Bansal) each have 2 admissions | Q6 (`HAVING COUNT > 1`) has results |
 | Appointments and payments span January to June 2026 | Q7 groups into six distinct months |
 | Ibuprofen and Amlodipine are prescribed far more than the rest | Q5 has a clear top result (9 and 8 prescriptions) |
@@ -305,7 +304,7 @@ The data in `insert_data.sql` was built on purpose rather than generated at rand
 |---|---|
 | departments | 5 |
 | doctors | 9 |
-| patients | 18 |
+| patients | 20 |
 | rooms | 8 |
 | medicines | 12 |
 | appointments | 32 |
@@ -314,7 +313,7 @@ The data in `insert_data.sql` was built on purpose rather than generated at rand
 | prescriptions | 29 |
 | prescription_medicines | 39 |
 | payments | 37 |
-| **Total** | **228** |
+| **Total** | **230** |
 
 ### 4.5 Data quality
 
@@ -343,14 +342,14 @@ All queries are in `queries/queries.sql`. The results below are from the sample 
 
 | Query | Business question | SQL concepts | Headline result |
 |---|---|---|---|
-| Q1 | Which doctors treated the most patients? | JOIN, COUNT(DISTINCT), GROUP BY | Dr. Suresh Iyer, 4 patients |
-| Q2 | Which department has the most appointments? | Multi-table JOIN, LIMIT | Cardiology, 9 |
+| Q1 | Which doctors treated the most patients? | JOIN, COUNT(DISTINCT), GROUP BY | Dr. Suresh Iyer and Dr. Nithya Shetty (tie), 4 patients |
+| Q2 | Which department has the most appointments? | Multi-table JOIN, LIMIT | Orthopedics, 10 |
 | Q3 | Average consultation fee by department | AVG, GROUP BY | ₹575 to ₹1350 |
-| Q4 | Registered patients who never visited | LEFT JOIN ... IS NULL | 4 patients |
+| Q4 | Registered patients who never visited | LEFT JOIN ... IS NULL | 5 patients |
 | Q5 | Most frequently prescribed medicines | Bridge-table JOIN, COUNT | Ibuprofen, 9 |
 | Q6 | Patients admitted more than once | GROUP BY, HAVING | 2 patients |
-| Q7 | Monthly revenue | DATE_FORMAT, SUM | ₹95,650 over 6 months |
-| Q8 | Room occupancy | LEFT JOIN, COUNT | Room 4 never used |
+| Q7 | Monthly revenue | DATE_FORMAT, SUM | ₹1,28,450 over 6 months |
+| Q8 | Room occupancy | LEFT JOIN, COUNT | Rooms 1 and 6 used most (twice each) |
 | Q9 | Average length of stay by room type | DATEDIFF, AVG, WHERE | ICU, 3.5 days |
 | Q10 | Consultation revenue per doctor | Conditional JOIN, arithmetic | Dr. Rohan Mehta, ₹6,000 |
 | Q11 | Cancellation rate per department | SUM(CASE WHEN ...) | Dermatology, 33.3% |
@@ -369,7 +368,7 @@ GROUP BY d.doctor_id, d.name, dept.name
 ORDER BY patients_treated DESC;
 ```
 
-**Result:** Dr. Suresh Iyer (Orthopedics) leads with 4 distinct patients, followed by Dr. Ananya Kulkarni (Pediatrics) with 3. Five doctors have treated 2 patients and two have treated 1. The count includes every appointment status.
+**Result:** Dr. Suresh Iyer and Dr. Nithya Shetty (both Orthopedics) tie at 4 distinct patients. Four doctors have treated 2 patients and three have treated 1. The count includes every appointment status.
 
 ### Q2. Busiest department
 
@@ -384,7 +383,7 @@ ORDER BY total_appointments DESC
 LIMIT 1;
 ```
 
-**Result:** Cardiology has the most appointments, 9 of the 32 in the database. It joins three tables (`appointments`, `doctors`, `departments`) because appointments store only a doctor, not a department.
+**Result:** Orthopedics has the most appointments, 10 of the 32 in the database. It joins three tables (`appointments`, `doctors`, `departments`) because appointments store only a doctor, not a department.
 
 ### Q3. Average consultation fee by department
 
@@ -419,7 +418,7 @@ WHERE a.appointment_id IS NULL
 ORDER BY p.patient_id;
 ```
 
-**Result:** Four registered patients have no appointment: Ramesh Chandran, Fatima Ansari, Sanjay Gowda and Rekha Iyengar (patient IDs 15 to 18). These are the records a front desk could follow up on.
+**Result:** Five registered patients have no appointment: Neha Joshi (patient 8), Ramesh Chandran, Fatima Ansari, Sanjay Gowda and Rekha Iyengar (patient IDs 15 to 18). These are the records a front desk could follow up on.
 
 ### Q5. Most frequently prescribed medicines
 
@@ -467,16 +466,16 @@ ORDER BY revenue_month;
 
 | Month (2026) | Total revenue (₹) |
 |---|---|
-| Jan | 11,700 |
+| Jan | 36,900 |
 | Feb | 15,200 |
 | Mar | 39,200 |
-| Apr | 7,850 |
+| Apr | 15,450 |
 | May | 20,250 |
 | Jun | 1,450 |
 
 *Sample payments, Jan–Jun 2026 · split by appointment or admission link.*
 
-**Result:** The hospital collected ₹95,650 across 37 payments from January to June 2026. March is the peak at ₹39,200, and two inpatient payments (₹22,500 and ₹11,400) make up ₹33,900 of it, so admissions drive the swings in monthly revenue. June is low because the sample data ends on 4 June.
+**Result:** The hospital collected ₹128,450 across 37 payments from January to June 2026. March is the peak at ₹39,200, closely followed by January at ₹36,900. Two inpatient payments (₹22,500 and ₹11,400) make up ₹33,900 of March, so admissions drive the swings in monthly revenue. June is low because the sample data ends on 4 June.
 
 ### Q8. Room occupancy (team question)
 
@@ -490,7 +489,7 @@ GROUP BY r.room_id, r.room_type, r.is_available
 ORDER BY times_used DESC;
 ```
 
-**Result:** Rooms 1 (General), 3 (Semi-Private) and 6 (Private) were each used twice. Rooms 2, 5, 7 and 8 were used once, and room 4 (Semi-Private) was never used.
+**Result:** Rooms 1 (General) and 6 (Private) were each used twice, and the other six rooms once. Every room has at least one admission, so the LEFT JOIN currently shows no zero-count row; it is kept so that an unused room would still appear.
 
 ### Q9. Average length of stay by room type (team question)
 
@@ -550,15 +549,15 @@ ORDER BY cancellation_rate_pct DESC;
 |---|---|---|---|
 | Dermatology | 3 | 1 | 33.3 |
 | Cardiology | 9 | 0 | 0.0 |
-| Orthopedics | 8 | 0 | 0.0 |
-| Pediatrics | 5 | 0 | 0.0 |
+| Orthopedics | 10 | 0 | 0.0 |
+| Pediatrics | 3 | 0 | 0.0 |
 | General Medicine | 7 | 0 | 0.0 |
 
 ### What the queries tell the hospital
 
-- **Demand is concentrated.** Cardiology has the most appointments (9 of 32) and the highest average fee (₹1,350).
+- **Demand is concentrated.** Orthopedics has the most appointments (10 of 32), while Cardiology has the highest average fee (₹1,350).
 - **Inpatient care drives revenue.** Admission payments account for most of the peak month, and ICU stays are the longest at 3.5 days on average.
-- **Some capacity sits idle.** Room 4 was never used, which Q8 surfaces only because it keeps zero-count rows.
+- **Room use is spread evenly.** Rooms 1 and 6 are used most (twice each) and every room has been used at least once.
 - **Follow-up opportunities exist.** Four registered patients have never had an appointment (Q4), and Dermatology's single cancellation gives it the highest cancellation rate (Q11).
 
 ---
@@ -612,6 +611,6 @@ Install MySQL 8.0.16 or later, then run the three scripts in order (the commands
 
 ## 7. Conclusion
 
-MediCare turns the scattered records of a hospital into one connected, normalised database that can answer real operational questions. It has 11 tables in 3NF, 12 foreign keys, CHECK, UNIQUE, DEFAULT and NOT NULL constraints, five supporting indexes, 228 rows of purpose-built sample data and 11 SQL queries, from doctor workload to room occupancy and monthly revenue.
+MediCare turns the scattered records of a hospital into one connected, normalised database that can answer real operational questions. It has 11 tables in 3NF, 11 foreign keys, CHECK, UNIQUE, DEFAULT and NOT NULL constraints, five supporting indexes, 230 rows of purpose-built sample data and 11 SQL queries, from doctor workload to room occupancy and monthly revenue.
 
 The team's most important design choices were tying every payment to an appointment or an admission, resolving prescriptions to medicines with a bridge table, and matching each foreign key's delete behaviour to the type of data it protects. The main known limitation is that overlapping admissions in one room are prevented by application logic rather than by the database. Insurance claims, live pharmacy stock, bed-level tracking and role-based access control are natural next steps that the current structure can absorb without redesign.
