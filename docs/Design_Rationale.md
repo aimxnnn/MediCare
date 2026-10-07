@@ -169,17 +169,15 @@ admissions → medicines → prescriptions → prescription_medicines → paymen
 
 ## 5. Assumptions
 
-1. **One transaction per payment** — a payment covers either one appointment or
-   one admission, never a combined bill.
-2. **Discharge cannot precede admission** — enforced by `chk_admission_dates`.
-3. **One active admission per patient at a time** — assumed, not enforced at the
+1. **Discharge cannot precede admission** — enforced by `chk_admission_dates`.
+2. **One active admission per patient at a time** — assumed, not enforced at the
    database level (see Section 4, item 4).
-4. **Single currency** — all fees, charges, prices, and payments are assumed to
+3. **Single currency** — all fees, charges, prices, and payments are assumed to
    be in one currency; no currency column exists.
-5. **Fixed consultation fee per doctor** — a doctor's fee is stored once on the
+4. **Fixed consultation fee per doctor** — a doctor's fee is stored once on the
    `doctors` row and assumed constant across their standard visits, rather than
    varying per appointment.
-6. **Records are permanent** — past appointments, admissions, and payments are
+5. **Records are permanent** — past appointments, admissions, and payments are
    kept for history and auditing; nothing in the design is built to be deleted
    as a matter of course (reflected in the `RESTRICT` policies in Section 3.3).
 
